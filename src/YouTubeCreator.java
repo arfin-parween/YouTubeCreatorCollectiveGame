@@ -5,19 +5,21 @@ import java.util.Scanner;
 
 public class YouTubeCreator {
     private char[][] grid;
-    private int gridSize;
+    private int rows;
+    private int cols;
     private List<String> words;
 
-    public YouTubeCreator(int gridSize, List<String> words) {
-        this.gridSize = gridSize;
-        this.grid = new char[gridSize][gridSize];
+    public YouTubeCreator(int rows, int cols, List<String> words) {
+        this.rows = rows;
+        this.cols = cols;
+        this.grid = new char[rows][cols];
         this.words = words;
         fillGrid();
     }
 
     private void fillGrid() {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 grid[i][j] = '-';
             }
         }
@@ -30,11 +32,11 @@ public class YouTubeCreator {
         for (String word : words) {
             boolean placed = false;
             while (!placed) {
-                int row = random.nextInt(gridSize);
-                int col = random.nextInt(gridSize);
+                int row = random.nextInt(rows);
+                int col = random.nextInt(cols);
                 int direction = random.nextInt(4); // 0 for horizontal, 1 for vertical, 2 for diagonal (top-left to bottom-right), 3 for diagonal (top-right to bottom-left)
 
-                if (direction == 0 && col + word.length() <= gridSize) {
+                if (direction == 0 && col + word.length() <= cols) {
                     // Check horizontal
                     if (HorizontalPlaceWord(word, row, col)) {
                         for (int i = 0; i < word.length(); i++) {
@@ -42,7 +44,7 @@ public class YouTubeCreator {
                         }
                         placed = true;
                     }
-                } else if (direction == 1 && row + word.length() <= gridSize) {
+                } else if (direction == 1 && row + word.length() <= rows) {
                     // Check vertical
                     if (VerticalPlaceWord(word, row, col)) {
                         for (int i = 0; i < word.length(); i++) {
@@ -50,17 +52,17 @@ public class YouTubeCreator {
                         }
                         placed = true;
                     }
-                } else if (direction == 2 && row + word.length() <= gridSize && col + word.length() <= gridSize) {
+                } else if (direction == 2 && row + word.length() <= rows && col + word.length() <= cols) {
                     // Check diagonal (top-left to bottom-right)
-                    if (DiagonallyTLBR(word, row, col)) {
+                    if (DiagonallyTopLeftBottomRight(word, row, col)) {
                         for (int i = 0; i < word.length(); i++) {
                             grid[row + i][col + i] = word.charAt(i);
                         }
                         placed = true;
                     }
-                } else if (direction == 3 && row + word.length() <= gridSize && col - word.length() >= -1) {
+                } else if (direction == 3 && row + word.length() <= rows && col - word.length() >= -1) {
                     // Check diagonal (top-right to bottom-left)
-                    if (DiagonallyTRBL(word, row, col)) {
+                    if (DiagonallyTopRightBottomLeft(word, row, col)) {
                         for (int i = 0; i < word.length(); i++) {
                             grid[row + i][col - i] = word.charAt(i);
                         }
@@ -89,7 +91,7 @@ public class YouTubeCreator {
         return true;
     }
 
-    private boolean DiagonallyTLBR(String word, int row, int col) {
+    private boolean DiagonallyTopLeftBottomRight(String word, int row, int col) {
         for (int i = 0; i < word.length(); i++) {
             if (grid[row + i][col + i] != '-') {
                 return false;
@@ -98,7 +100,7 @@ public class YouTubeCreator {
         return true;
     }
 
-    private boolean DiagonallyTRBL(String word, int row, int col) {
+    private boolean DiagonallyTopRightBottomLeft(String word, int row, int col) {
         for (int i = 0; i < word.length(); i++) {
             if (grid[row + i][col - i] != '-') {
                 return false;
@@ -109,8 +111,8 @@ public class YouTubeCreator {
 
     private void fillEmptySpaces() {
         Random random = new Random();
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 if (grid[i][j] == '-') {
                     grid[i][j] = (char) (random.nextInt(26) + 'A');
                 }
@@ -119,8 +121,8 @@ public class YouTubeCreator {
     }
 
     public void printGrid() {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 System.out.print(grid[i][j] + " ");
             }
             System.out.println();
@@ -136,15 +138,15 @@ public class YouTubeCreator {
         if (position != null) return position;
         position = findWordVertically(word);
         if (position != null) return position;
-        position = findWordDiagonallyTLBR(word);
+        position = findWordDiagonallyTopLeftBottomRight(word);
         if (position != null) return position;
-        position = findWordDiagonallyTRBL(word);
+        position = findWordDiagonallyTopRightBottomLeft(word);
         return position;
     }
 
     private String findWordHorizontally(String word) {
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j <= gridSize - word.length(); j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j <= cols - word.length(); j++) {
                 int k;
                 for (k = 0; k < word.length(); k++) {
                     if (grid[i][j + k] != word.charAt(k)) {
@@ -160,8 +162,8 @@ public class YouTubeCreator {
     }
 
     private String findWordVertically(String word) {
-        for (int i = 0; i <= gridSize - word.length(); i++) {
-            for (int j = 0; j < gridSize; j++) {
+        for (int i = 0; i <= rows - word.length(); i++) {
+            for (int j = 0; j < cols; j++) {
                 int k;
                 for (k = 0; k < word.length(); k++) {
                     if (grid[i + k][j] != word.charAt(k)) {
@@ -176,9 +178,9 @@ public class YouTubeCreator {
         return null;
     }
 
-    private String findWordDiagonallyTLBR(String word) {
-        for (int i = 0; i <= gridSize - word.length(); i++) {
-            for (int j = 0; j <= gridSize - word.length(); j++) {
+    private String findWordDiagonallyTopLeftBottomRight(String word) {
+        for (int i = 0; i <= rows - word.length(); i++) {
+            for (int j = 0; j <= cols - word.length(); j++) {
                 int k;
                 for (k = 0; k < word.length(); k++) {
                     if (grid[i + k][j + k] != word.charAt(k)) {
@@ -193,9 +195,9 @@ public class YouTubeCreator {
         return null;
     }
 
-    private String findWordDiagonallyTRBL(String word) {
-        for (int i = 0; i <= gridSize - word.length(); i++) {
-            for (int j = word.length() - 1; j < gridSize; j++) {
+    private String findWordDiagonallyTopRightBottomLeft(String word) {
+        for (int i = 0; i <= rows - word.length(); i++) {
+            for (int j = word.length() - 1; j < cols; j++) {
                 int k;
                 for (k = 0; k < word.length(); k++) {
                     if (grid[i + k][j - k] != word.charAt(k)) {
@@ -216,26 +218,27 @@ public class YouTubeCreator {
         words.add("ARFINPARWEEN");
         words.add("ANKITBANSAL");
         words.add("DEBUGWITHSHUBHAM");
-        words.add("DEWITHASHUTOSH");
         words.add("GEEKCODERS");
         words.add("CODEBIX");
-        words.add("THEBIGDATASHOW");
-        words.add("THEENGINEERGUY");
+        words.add("DATAENGINEERINGWITHASHUTOSH");
         words.add("GAURAVSHARMA");
         words.add("TECHTFQ");
         words.add("SUMITMITTAL");
-        words.add("DATASAVVY");
         words.add("TAKEUFORWARD");
         words.add("DATAWITHZACH");
         words.add("MANOHARBATRA");
+        words.add("THEBIGDATASHOW");
+        words.add("THEENGINEERGUY");
         words.add("DARSHILPARMAR");
         words.add("RPAFEED");
         words.add("BEAPROGRAMMER");
+        words.add("DATASAVVY");
         words.add("ELEARNINGBRIDGE");
         words.add("FRAZ");
         words.add("INTERVIEWDEDO");
+        words.add("TECHNICALSUNEJA");
 
-        YouTubeCreator wordSearch = new YouTubeCreator(25, words);
+        YouTubeCreator wordSearch = new YouTubeCreator(15, 35, words);
         wordSearch.printGrid();
 
         System.out.println("Words to find:");
@@ -244,13 +247,20 @@ public class YouTubeCreator {
         }
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a word to find in the grid:");
-        String wordToFind = scanner.nextLine();
-        String result = wordSearch.findWord(wordToFind);
-        if (result != null) {
-            System.out.println(result);
-        } else {
-            System.out.println("Word not found.");
+        while (true) {
+            System.out.println("Enter a word to find (or type 'exit' to quit):");
+            String input = scanner.nextLine().toUpperCase();
+
+            if (input.equals("EXIT")) {
+                break;
+            }
+
+            String result = wordSearch.findWord(input);
+            if (result != null) {
+                System.out.println(result);
+            } else {
+                System.out.println("Word not found.");
+            }
         }
         scanner.close();
     }
