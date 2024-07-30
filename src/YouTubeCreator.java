@@ -220,7 +220,7 @@ public class YouTubeCreator {
         words.add("DEBUGWITHSHUBHAM");
         words.add("GEEKCODERS");
         words.add("CODEBIX");
-        words.add("DATAENGINEERINGWITHASHUTOSH");
+        words.add("DEWITHASHUTOSH");
         words.add("GAURAVSHARMA");
         words.add("TECHTFQ");
         words.add("SUMITMITTAL");
@@ -238,7 +238,7 @@ public class YouTubeCreator {
         words.add("INTERVIEWDEDO");
         words.add("TECHNICALSUNEJA");
 
-        YouTubeCreator wordSearch = new YouTubeCreator(15, 35, words);
+        YouTubeCreator wordSearch = new YouTubeCreator(20, 35, words);
         wordSearch.printGrid();
 
         System.out.println("Words to find:");
